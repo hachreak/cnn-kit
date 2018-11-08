@@ -26,10 +26,14 @@ def _classification(model, output_shape):
     return Model(inputs=model.input, outputs=x)
 
 
-def get_model(output_shape):
+def get_model(input_shape, output_shape):
     """Get the model."""
     # load the Inception_V3 model
-    model = inception_v3.InceptionV3(weights='imagenet', include_top=False)
+    model = inception_v3.InceptionV3(
+        weights='imagenet',
+        include_top=False,
+        input_shape=input_shape
+    )
     # make them readonly
     model = _set_readonly(model)
     # add new classification layers
