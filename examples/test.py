@@ -10,6 +10,7 @@ from cnn_midlogo import train
 cfg = {
     'main': {
         'img_shape': (150, 150, 3),
+        'model': 'cnn_midlogo.models.fine_tuning_incv3.get_model',
     },
     'compile': {
         'loss': categorical_crossentropy,

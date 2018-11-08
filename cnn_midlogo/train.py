@@ -5,14 +5,15 @@ from __future__ import absolute_import
 
 from keras.preprocessing.image import ImageDataGenerator
 
-from .utils import callbacks, get_output_shape
-from .model import get_model
+from .utils import callbacks, get_output_shape, load_fun
 
 
 def run(config):
     """Run training."""
     img_width, img_height, img_depth = config['main']['img_shape']
     output_shape = get_output_shape(config['train']['flow']['directory'])
+
+    get_model = load_fun(config['main']['model'])
 
     model = get_model(config['main']['img_shape'], output_shape=output_shape)
 
