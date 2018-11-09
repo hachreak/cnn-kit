@@ -22,7 +22,6 @@ cfg = {
             'batch_size': 1,
             'directory': '/tmp/fuu',
             'class_mode': 'categorical',
-            'target_size': (150, 150),
             'shuffle': True,
         },
         'callbacks': {
@@ -57,7 +56,6 @@ cfg = {
             'batch_size': 1,
             'directory': '/tmp/fuu',
             'class_mode': 'categorical',
-            'target_size': (150, 150),
         },
         'data_gen': {},
     },
