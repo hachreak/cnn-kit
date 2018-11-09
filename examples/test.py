@@ -23,8 +23,18 @@ cfg = {
             'directory': '/tmp/fuu',
             'class_mode': 'categorical',
             'target_size': (150, 150),
+            'shuffle': True,
         },
-        'callbacks': {},
+        'callbacks': {
+            'keras.callbacks.EarlyStopping': {
+                'monitor': 'val_loss',
+                'min_delta': 0.1,
+                'patience': 10,
+                'verbose': 1,
+                'mode': 'auto',
+                'restore_best_weights': True,
+            },
+        },
         'data_gen': {
             'shear_range': 0.5,
             'zoom_range': 0.4,
@@ -37,6 +47,8 @@ cfg = {
         },
         'fit': {
             'epochs': 1,
+            'step_per_epochs': 5,
+            'validation_steps': 3,
             'verbose': 1,
         },
     },
