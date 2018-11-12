@@ -20,5 +20,5 @@ def callbacks(config):
 
 
 def get_output_shape(directory):
-    """Get output shape."""
+    """Get output shape checking dataset structure."""
     return len(os.listdir(directory))
