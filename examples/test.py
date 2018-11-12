@@ -1,10 +1,13 @@
 
 """Test."""
 
+import sys
+
 from keras.losses import categorical_crossentropy
 from keras.optimizers import Adam
+from keras.models import load_model
 
-from cnn_midlogo import train
+from cnn_midlogo import train, predict
 
 
 cfg = {
@@ -67,7 +70,34 @@ cfg = {
         },
         'data_gen': {},
     },
+    'test': {
+        'classes': ['medium', 'no'],
+        'flow': {
+            'batch_size': 1,
+            'directory': '/tmp/dataset/validate',
+        },
+    }
 }
 
-res = train.run(cfg)
-res.model.summary()
+
+def print_menu(args):
+    """Print menu."""
+    print("{0} train".format(args[0]))
+    print("{0} predict [model_name]".format(args[0]))
+
+
+if len(sys.argv) < 2:
+    print_menu(sys.argv)
+    sys.exit(1)
+
+if sys.argv[1] == 'train':
+    train.run(cfg)
+else:
+    if len(sys.argv) < 3:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+    model = load_model(name)
+    for filename, prediction in predict.predict_on_the_fly(model, cfg):
+        print("{0} -> {1}".format(filename, prediction))
