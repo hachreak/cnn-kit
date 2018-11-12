@@ -34,10 +34,10 @@ cfg = {
                 'restore_best_weights': True,
             },
             'keras.callbacks.ModelCheckpoint': {
-                'filepath':
-                    'weights-improvement-{epoch:02d}-{val_acc:.2f}.hdf5',
+                'filepath': 'model-{epoch:02d}-{val_acc:.2f}.hdf5',
                 'monitor': 'val_acc',
                 'save_best_only': True,
+                'save_weights_only': False,
                 'mode': 'max',
                 'verbose': 1,
             },
