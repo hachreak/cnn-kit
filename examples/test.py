@@ -13,7 +13,12 @@ from cnn_midlogo import train, predict
 cfg = {
     'main': {
         'img_shape': (500, 500, 3),
-        'model': 'cnn_midlogo.models.fine_tuning_vgg19.get_model',
+        'model': {
+            'name': 'cnn_midlogo.models.fine_tuning_vgg19.get_model',
+            'args': {
+                'readonly_until': 18,
+            },
+        },
     },
     'compile': {
         'loss': categorical_crossentropy,

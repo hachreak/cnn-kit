@@ -5,9 +5,9 @@ from keras.models import Model
 from keras.layers import Dense, Dropout, GlobalAveragePooling2D
 
 
-def _set_readonly(model):
+def _set_readonly(model, until=None):
     """Make a model weights readonly."""
-    for layer in model.layers:
+    for layer in model.layers[:until]:
         layer.trainable = False
     return model
 

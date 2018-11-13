@@ -21,9 +21,13 @@ def run(config):
     #  img_width, img_height, img_depth = config['main']['img_shape']
     output_shape = get_output_shape(config['train']['flow']['directory'])
 
-    get_model = load_fun(config['main']['model'])
+    get_model = load_fun(config['main']['model']['name'])
 
-    model = get_model(config['main']['img_shape'], output_shape=output_shape)
+    model = get_model(
+        input_shape=config['main']['img_shape'],
+        output_shape=output_shape,
+        **config['main']['model'].get('args')
+    )
 
     model.compile(**config['compile'])
 
