@@ -1,13 +1,15 @@
 
 """Visualize utilities."""
 
+import scipy.ndimage as ndimage
+
 from keras import activations
 from matplotlib import pyplot as plt
 from vis.utils import utils
 from vis.visualization import visualize_saliency
 
 
-def plot_saliency(model, x, y_category, y_name, cmap=None):
+def plot_saliency(model, x, y_category, y_name, cmap=None, smooth=True):
     """Visualize saliency."""
     # color map
     if cmap is None:
@@ -28,5 +30,9 @@ def plot_saliency(model, x, y_category, y_name, cmap=None):
     plt.imshow(grads, cmap='jet')
     plt.colorbar()
     plt.suptitle(y_name)
+
+    if smooth:
+        smoothe = ndimage.gaussian_filter(grads, sigma=5)
+        plt.imshow(smoothe, alpha=.7)
 
     return plt
