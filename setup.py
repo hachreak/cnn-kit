@@ -54,8 +54,8 @@ setup(
     keywords='machine learning',
     packages=find_packages(),
     install_requires=[
-        #  'keras-vis>=0.4.1',
-        #  'matplotlib>=2.2.2',
+        'keras-vis>=0.4.1',
+        'matplotlib>=2.2.2',
         #  'PySide2>=5.11.1',
         'numpy>=1.15.4',
         'Keras>=2.2.0',
