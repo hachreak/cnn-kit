@@ -4,7 +4,7 @@
 import sys
 
 from keras.losses import categorical_crossentropy
-from keras.optimizers import Adam
+from keras.optimizers import SGD
 from keras.models import load_model
 
 from cnn_midlogo import train, predict
@@ -22,7 +22,7 @@ cfg = {
     },
     'compile': {
         'loss': categorical_crossentropy,
-        'optimizer': Adam(lr=0.001),
+        'optimizer': SGD(lr=0.001, decay=1e-6, momentum=0.5, nesterov=True),
         'metrics': ['accuracy'],
     },
     'train': {
