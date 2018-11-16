@@ -31,7 +31,5 @@ def predict_on_the_fly(model, config):
     gen = ImageDataGenerator()
     flow = gen.flow_from_directory(**_flow_cfg(config, 'test'))
     pred = model.predict_generator(flow)
-    return [
-        (flow.filenames[i], classes[_most_probable(p)])
-        for i, p in enumerate(pred)
-    ]
+    for i, p in enumerate(pred):
+        yield (flow.filenames[i], classes[_most_probable(p)])
