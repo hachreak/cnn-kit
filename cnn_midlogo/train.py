@@ -6,7 +6,7 @@ from __future__ import absolute_import
 from copy import deepcopy
 from keras.preprocessing.image import ImageDataGenerator
 
-from .utils import callbacks, get_output_shape, load_fun
+from .utils import callbacks, get_output_shape, load_fun, get_phase_cfg
 
 
 def _flow_cfg(config, name):
@@ -34,8 +34,10 @@ def run(config):
     gen_train = ImageDataGenerator(**config['train']['data_gen'])
     gen_valid = ImageDataGenerator(**config['validate']['data_gen'])
 
-    flow_train = gen_train.flow_from_directory(**_flow_cfg(config, 'train'))
-    flow_valid = gen_valid.flow_from_directory(**_flow_cfg(config, 'validate'))
+    flow_train = gen_train.flow_from_directory(
+            **get_phase_cfg(config, 'train'))
+    flow_valid = gen_valid.flow_from_directory(
+            **get_phase_cfg(config, 'validate'))
 
     cbs = callbacks(config['train']['callbacks'])
 

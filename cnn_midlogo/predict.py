@@ -3,9 +3,9 @@
 
 import numpy as np
 
-from copy import deepcopy
 from keras.preprocessing.image import ImageDataGenerator
 
+from .utils import get_phase_cfg
 from .exc import NoPrediction
 
 
@@ -32,10 +32,8 @@ def predict(model, imgs, classes):
 
 
 def _flow_cfg(config, name):
-    img_width, img_height, _ = deepcopy(config['main']['img_shape'])
-    cfg = deepcopy(config[name]['flow'])
+    cfg = get_phase_cfg(config, name)
     cfg['shuffle'] = False
-    cfg['target_size'] = (img_height, img_width)
     return cfg
 
 

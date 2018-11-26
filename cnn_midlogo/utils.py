@@ -6,6 +6,8 @@ from __future__ import absolute_import
 import os
 import importlib
 
+from copy import deepcopy
+
 
 def load_fun(name):
     """Load a function from name."""
@@ -22,3 +24,10 @@ def callbacks(config):
 def get_output_shape(directory):
     """Get output shape checking dataset structure."""
     return len(os.listdir(directory))
+
+
+def get_phase_cfg(config, name):
+    img_width, img_height, _ = deepcopy(config['main']['img_shape'])
+    cfg = deepcopy(config[name]['flow'])
+    cfg['target_size'] = (img_height, img_width)
+    return cfg

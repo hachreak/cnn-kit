@@ -1,12 +1,19 @@
 
 """Visualize utilities."""
 
-import scipy.ndimage as ndimage
 
+import scipy.ndimage as ndimage
+import numpy as np
+
+from functools import partial
 from keras import activations
+from keras.preprocessing.image import ImageDataGenerator, load_img, \
+    img_to_array
 from matplotlib import pyplot as plt
 from vis.utils import utils
 from vis.visualization import visualize_saliency
+
+from .utils import get_phase_cfg
 
 
 def plot_saliency(model, x, y_category, y_name, cmap=None, smooth=True):
@@ -36,3 +43,11 @@ def plot_saliency(model, x, y_category, y_name, cmap=None, smooth=True):
         plt.imshow(smoothe, alpha=.7)
 
     return plt
+
+
+def plot_saliency_on_the_fly(model, img_path, config):
+    """Plot saliency on the fly."""
+    cfg = get_phase_cfg(config, 'saliency')
+    imgs = np.array([img_to_array(load_img(img_path, **cfg))])
+    flow = next(ImageDataGenerator().flow(imgs))
+    return partial(plot_saliency, model, flow[0])

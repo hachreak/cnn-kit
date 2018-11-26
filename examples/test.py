@@ -7,7 +7,7 @@ from keras.losses import categorical_crossentropy
 from keras.optimizers import SGD
 from keras.models import load_model
 
-from cnn_midlogo import train, predict
+from cnn_midlogo import train, predict, visualize
 
 
 cfg = {
@@ -51,19 +51,19 @@ cfg = {
             },
         },
         'data_gen': {
-            'shear_range': 0.5,
-            'zoom_range': 0.4,
-            'rotation_range': 120,
-            'width_shift_range': 0.3,
-            'height_shift_range': 0.3,
-            'channel_shift_range': 150,
+            'shear_range': 0,
+            'zoom_range': (0.8, 1),
+            'rotation_range': 1200,
+            'width_shift_range': 0.05,
+            'height_shift_range': 0.05,
+            'channel_shift_range': 70,
             'fill_mode': 'nearest',
-            'horizontal_flip': False,
+            'horizontal_flip': True,
+            'vertical_flip': True,
         },
         'fit': {
-            'epochs': 50,
-            'steps_per_epoch': 80,
-            'validation_steps': 10,
+            'epochs': 60,
+            'steps_per_epoch': 300,
             'verbose': 1,
         },
     },
@@ -81,6 +81,13 @@ cfg = {
             'batch_size': 1,
             'directory': '/tmp/dataset/validate',
         },
+    },
+    'saliency': {
+        'flow': {},
+        'plot': {
+            'y_category': 0,
+            'y_name': 'test',
+        },
     }
 }
 
@@ -89,20 +96,36 @@ def print_menu(args):
     """Print menu."""
     print("{0} train".format(args[0]))
     print("{0} predict [model_name]".format(args[0]))
+    print("{0} saliency [model_name] [img_path]".format(args[0]))
 
 
 if len(sys.argv) < 2:
     print_menu(sys.argv)
     sys.exit(1)
 
-if sys.argv[1] == 'train':
+main_arg = sys.argv[1]
+
+if main_arg == 'train':
     train.run(cfg)
-else:
+elif main_arg == 'predict':
     if len(sys.argv) < 3:
         print_menu(sys.argv)
         sys.exit(1)
 
     name = sys.argv[2]
+
     model = load_model(name)
     for filename, prediction in predict.predict_on_the_fly(model, cfg):
         print("{0} -> {1}".format(filename, prediction))
+
+else:
+    if len(sys.argv) < 4:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+    img_path = sys.argv[3]
+
+    model = load_model(name)
+    plt = visualize.plot_saliency_on_the_fly(model, img_path, cfg)
+    plt(**cfg['saliency']['plot']).show()
