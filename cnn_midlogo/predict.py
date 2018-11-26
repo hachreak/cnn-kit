@@ -43,7 +43,7 @@ def predict_on_the_fly(model, config, choose=None):
     """Run prediction on the fly on a directory."""
     choose = choose or most_probable
     classes = config['test']['classes']
-    gen = ImageDataGenerator()
+    gen = ImageDataGenerator(**config['test']['data_gen'])
     flow = gen.flow_from_directory(**_flow_cfg(config, 'test'))
     pred = model.predict_generator(flow)
     for i, p in enumerate(pred):
