@@ -29,7 +29,7 @@ def plot_saliency(model, x, y_category, y_name, cmap=None, smooth=True):
     model = utils.apply_modifications(model)
 
     grads = visualize_saliency(
-        model, layer_idx, filter_indices=[y_category],
+        model, layer_idx, filter_indices=y_category,
         seed_input=x,
         backprop_modifier='guided'
     )
@@ -51,7 +51,11 @@ def plot_saliency_on_the_fly(model, img_path, config):
     cfg = get_phase_cfg(config, 'saliency')
     imgs = np.array([img_to_array(load_img(img_path, **cfg))])
     flow = next(ImageDataGenerator().flow(imgs))
-    return partial(plot_saliency, model, flow[0])
+    return partial(
+        plot_saliency, model=model, x=flow[0],
+        y_category=range(0, len(config['test']['classes'])),
+        y_name=config['test']['classes']
+    )
 
 
 def classification_report(predictions, cfg):

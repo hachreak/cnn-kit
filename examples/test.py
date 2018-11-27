@@ -82,13 +82,6 @@ cfg = {
             'directory': '/tmp/dataset/validate',
         },
     },
-    'saliency': {
-        'flow': {},
-        'plot': {
-            'y_category': 0,
-            'y_name': 'test',
-        },
-    }
 }
 
 
@@ -116,7 +109,7 @@ def do_saliency(cfg):
 
     model = load_model(name)
     plt = visualize.plot_saliency_on_the_fly(model, img_path, cfg)
-    plt(**cfg['saliency']['plot']).show()
+    plt().show()
 
 
 def do_report(cfg):
