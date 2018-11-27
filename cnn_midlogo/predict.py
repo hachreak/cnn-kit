@@ -46,6 +46,7 @@ def predict_on_the_fly(model, config, choose=None):
     pred = model.predict_generator(flow)
     for i, p in enumerate(pred):
         try:
-            yield (flow.filenames[i], classes[choose(p)])
+            yield (flow.filenames[i], classes[flow.classes[i]],
+                   classes[choose(p)])
         except NoPrediction:
             pass

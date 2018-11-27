@@ -5,6 +5,7 @@
 import scipy.ndimage as ndimage
 import numpy as np
 
+from sklearn.metrics import classification_report as cr
 from functools import partial
 from keras import activations
 from keras.preprocessing.image import ImageDataGenerator, load_img, \
@@ -51,3 +52,12 @@ def plot_saliency_on_the_fly(model, img_path, config):
     imgs = np.array([img_to_array(load_img(img_path, **cfg))])
     flow = next(ImageDataGenerator().flow(imgs))
     return partial(plot_saliency, model, flow[0])
+
+
+def classification_report(predictions, cfg):
+    """Show report."""
+    predictions = list(predictions)
+    y_true = [p[1] for p in predictions]
+    y_pred = [p[2] for p in predictions]
+    return cr(y_true, y_pred, labels=cfg['test']['classes'],
+              target_names=cfg['test']['classes'])

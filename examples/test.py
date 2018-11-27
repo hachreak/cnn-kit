@@ -92,11 +92,53 @@ cfg = {
 }
 
 
+def do_predict(cfg):
+    """Do predict."""
+    if len(sys.argv) < 3:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+
+    model = load_model(name)
+    for filename, y_true, y_pred in predict.predict_on_the_fly(model, cfg):
+        print("{0} -> {1}".format(filename, y_pred))
+
+
+def do_saliency(cfg):
+    """Do saliency."""
+    if len(sys.argv) < 4:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+    img_path = sys.argv[3]
+
+    model = load_model(name)
+    plt = visualize.plot_saliency_on_the_fly(model, img_path, cfg)
+    plt(**cfg['saliency']['plot']).show()
+
+
+def do_report(cfg):
+    """Do report."""
+    if len(sys.argv) < 3:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+
+    model = load_model(name)
+    print(visualize.classification_report(
+        predict.predict_on_the_fly(model, cfg), cfg
+    ))
+
+
 def print_menu(args):
     """Print menu."""
     print("{0} train".format(args[0]))
     print("{0} predict [model_name]".format(args[0]))
     print("{0} saliency [model_name] [img_path]".format(args[0]))
+    print("{0} report [model_name]".format(args[0]))
 
 
 if len(sys.argv) < 2:
@@ -108,24 +150,8 @@ main_arg = sys.argv[1]
 if main_arg == 'train':
     train.run(cfg)
 elif main_arg == 'predict':
-    if len(sys.argv) < 3:
-        print_menu(sys.argv)
-        sys.exit(1)
-
-    name = sys.argv[2]
-
-    model = load_model(name)
-    for filename, prediction in predict.predict_on_the_fly(model, cfg):
-        print("{0} -> {1}".format(filename, prediction))
-
+    do_predict(cfg)
+elif main_arg == 'saliency':
+    do_saliency(cfg)
 else:
-    if len(sys.argv) < 4:
-        print_menu(sys.argv)
-        sys.exit(1)
-
-    name = sys.argv[2]
-    img_path = sys.argv[3]
-
-    model = load_model(name)
-    plt = visualize.plot_saliency_on_the_fly(model, img_path, cfg)
-    plt(**cfg['saliency']['plot']).show()
+    do_report(cfg)
