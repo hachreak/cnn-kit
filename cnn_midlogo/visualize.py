@@ -82,3 +82,10 @@ def print_matrix(matrix, labels):
     for i, row in enumerate(matrix):
         to_print = ''.join(['{:8}'.format(round(item, 2)) for item in row])
         print("{0:<15} {1}".format(labels[i], to_print))
+
+
+def print_wrong(predictions):
+    """Print only wrongly classified."""
+    for name, true, pred in predictions:
+        if true != pred:
+            print("{0} {1} {2}".format(true, pred, name))

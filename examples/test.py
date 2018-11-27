@@ -141,6 +141,18 @@ def do_confusion_matrix(cfg):
     ))
 
 
+def do_wrong(cfg):
+    """Show wrong crassified."""
+    if len(sys.argv) < 3:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+
+    model = load_model(name)
+    visualize.print_wrong(predict.predict_on_the_fly(model, cfg))
+
+
 def print_menu(args):
     """Print menu."""
     print("{0} train".format(args[0]))
@@ -148,6 +160,7 @@ def print_menu(args):
     print("{0} saliency [model_name] [img_path]".format(args[0]))
     print("{0} report [model_name]".format(args[0]))
     print("{0} cm [model_name]".format(args[0]))
+    print("{0} wrong [model_name]".format(args[0]))
 
 
 if len(sys.argv) < 2:
@@ -164,5 +177,9 @@ elif main_arg == 'saliency':
     do_saliency(cfg)
 elif main_arg == 'report':
     do_report(cfg)
-else:
+elif main_arg == 'cm':
     do_confusion_matrix(cfg)
+elif main_arg == 'wrong':
+    do_wrong(cfg)
+else:
+    print_menu(sys.argv)
