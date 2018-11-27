@@ -5,7 +5,8 @@
 import scipy.ndimage as ndimage
 import numpy as np
 
-from sklearn.metrics import classification_report as cr
+from sklearn.metrics import classification_report as cr, \
+    confusion_matrix as cm
 from functools import partial
 from keras import activations
 from keras.preprocessing.image import ImageDataGenerator, load_img, \
@@ -65,3 +66,19 @@ def classification_report(predictions, cfg):
     y_pred = [p[2] for p in predictions]
     return cr(y_true, y_pred, labels=cfg['test']['classes'],
               target_names=cfg['test']['classes'])
+
+
+def confusion_matrix(predictions, cfg):
+    """Show confusion matrix."""
+    predictions = list(predictions)
+    labels = cfg['test']['classes']
+    y_true = [p[1] for p in predictions]
+    y_pred = [p[2] for p in predictions]
+    return cm(y_true, y_pred, labels=cfg['test']['classes']), labels
+
+
+def print_matrix(matrix, labels):
+    """Print a matrix."""
+    for i, row in enumerate(matrix):
+        to_print = ''.join(['{:8}'.format(round(item, 2)) for item in row])
+        print("{0:<15} {1}".format(labels[i], to_print))

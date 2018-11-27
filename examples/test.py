@@ -126,12 +126,28 @@ def do_report(cfg):
     ))
 
 
+def do_confusion_matrix(cfg):
+    """Do confusion matrix."""
+    if len(sys.argv) < 3:
+        print_menu(sys.argv)
+        sys.exit(1)
+
+    name = sys.argv[2]
+
+    model = load_model(name)
+    print("Confusion matrix:\n")
+    visualize.print_matrix(*visualize.confusion_matrix(
+        predict.predict_on_the_fly(model, cfg), cfg
+    ))
+
+
 def print_menu(args):
     """Print menu."""
     print("{0} train".format(args[0]))
     print("{0} predict [model_name]".format(args[0]))
     print("{0} saliency [model_name] [img_path]".format(args[0]))
     print("{0} report [model_name]".format(args[0]))
+    print("{0} cm [model_name]".format(args[0]))
 
 
 if len(sys.argv) < 2:
@@ -146,5 +162,7 @@ elif main_arg == 'predict':
     do_predict(cfg)
 elif main_arg == 'saliency':
     do_saliency(cfg)
-else:
+elif main_arg == 'report':
     do_report(cfg)
+else:
+    do_confusion_matrix(cfg)
