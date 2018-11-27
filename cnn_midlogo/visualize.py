@@ -88,4 +88,4 @@ def print_wrong(predictions):
     """Print only wrongly classified."""
     for name, true, pred in predictions:
         if true != pred:
-            print("{0} {1} {2}".format(true, pred, name))
+            print(", ".join([true, pred, name]))
