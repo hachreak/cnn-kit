@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# This file is part of cnn_midlogo.
+# This file is part of cnn_kit.
 # Copyright 2018 Leonardo Rossi <leonardo.rossi@studenti.unipr.it>.
 #
 # pysenslog is free software: you can redistribute it and/or modify it under
@@ -29,9 +29,9 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='cnn_midlogo',
+    name='cnn_kit',
     version='0.1.0',
-    description='Find medium logos!',
+    description='CNN Kit - helper fun to write CNN!',
     url='',
     author='Leonardo Rossi',
     author_email='leonardo.rossi@studenti.unipr.it',
@@ -42,7 +42,7 @@ setup(
         #   5 - Production/Stable
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
         #  'Programming Language :: Python :: 3',
@@ -55,8 +55,9 @@ setup(
     packages=find_packages(),
     install_requires=[
         # FIXME see keras-vis#141 keras-vis#119
+        # install from git
         # 'keras-vis>=0.4.1',
-        'keras-vis-temp>=0.4.2',
+        # 'keras-vis-temp>=0.4.2',
         'matplotlib>=2.2.2',
         #  'PySide2>=5.11.1',
         'numpy>=1.15.4',

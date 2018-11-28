@@ -7,14 +7,14 @@ from keras.losses import categorical_crossentropy
 from keras.optimizers import SGD
 from keras.models import load_model
 
-from cnn_midlogo import train, predict, visualize
+from cnn_kit import train, predict, visualize
 
 
 cfg = {
     'main': {
         'img_shape': (500, 500, 3),
         'model': {
-            'name': 'cnn_midlogo.models.fine_tuning_vgg19.get_model',
+            'name': 'cnn_kit.models.fine_tuning_vgg19.get_model',
             'args': {
                 'readonly_until': 18,
             },
