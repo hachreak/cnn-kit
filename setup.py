@@ -61,7 +61,7 @@ setup(
         'matplotlib>=2.2.2',
         #  'PySide2>=5.11.1',
         'numpy>=1.15.4',
-        'Keras>=2.2.0',
+        'Keras>=2.2.4',
         #  'tensorflow>=1.9.0',
         'dlib>=19.15.0',
         'scikit-learn>=0.19.2',
