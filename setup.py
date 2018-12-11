@@ -54,6 +54,7 @@ setup(
     keywords='machine learning',
     packages=find_packages(),
     install_requires=[
+        'click>=7.0',
         # FIXME see keras-vis#141 keras-vis#119
         # install from git
         # 'keras-vis>=0.4.1',
@@ -72,5 +73,9 @@ setup(
         'cpu': ['tensorflow'],
         'dev': ['check-manifest'],
         'test': ['coverage'],
-    }
+    },
+    entry_points='''
+        [console_scripts]
+        cnn-kit-cli=cnn_kit.cli.main:cli
+    ''',
 )
