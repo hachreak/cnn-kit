@@ -1,0 +1,1 @@
+-e git+https://github.com/raghakot/keras-vis.git#egg=keras-vis
