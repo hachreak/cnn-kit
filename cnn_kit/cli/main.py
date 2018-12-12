@@ -4,7 +4,7 @@
 import click
 
 from .validators import validate_csv_file, validate_directory
-from ..datasets.csv import find_files, build_dataset, create_symlinks
+from ..datasets import csv as c
 
 
 @click.group()
@@ -18,15 +18,28 @@ def dataset():
 
 
 @dataset.group()
-def build():
+def csv():
     pass
 
 
-@build.command()
+@csv.command()
 @click.argument('csv_file', callback=validate_csv_file, type=click.File('rb'))
 @click.argument('src_dir', callback=validate_directory)
 @click.argument('dst_dir')
-def csv(csv_file, src_dir, dst_dir):
+def build(csv_file, src_dir, dst_dir):
     csv_file = list(csv_file)
-    files = find_files(csv_file, src_dir)
-    create_symlinks(build_dataset(csv_file, files, dst_dir))
+    files = c.find_files(c.get_column(0, csv_file), src_dir)
+    c.create_symlinks(c.build_dataset(csv_file, files, dst_dir))
+
+
+@csv.command()
+@click.argument('csv_file', callback=validate_csv_file, type=click.File('rb'))
+@click.argument('src_dir', callback=validate_directory)
+#  @click.argument('dst_dir', callback=validate_directory)
+def check(csv_file, src_dir):  # , dst_dir):
+    csv_file = list(csv_file)
+    csv_filenames = c.get_column(0, csv_file)
+    found_filenames = c.basenames(c.find_files(csv_filenames, src_dir))
+    not_found = set(csv_filenames) - set(found_filenames)
+    for f in not_found:
+        print(f)

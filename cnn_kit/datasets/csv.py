@@ -20,10 +20,8 @@ def build_dataset(csv_file, filepaths, dst_dir):
             yield fname, os.path.join(dst_dir, set_, class_, name)
 
 
-def find_files(csv_file, src_dir):
+def find_files(filenames, src_dir):
     """Find dataset files from csv file."""
-    fcsv = csv_file[1:]
-    filenames = [name for name, _, _ in fcsv]
     exts = _get_files_ext(filenames)
     return filter(
         lambda x: os.path.basename(x) in filenames,
@@ -64,3 +62,11 @@ def _create_dir(path):
         else:
             raise
 
+def get_column(column, csv_file):
+    fcsv = csv_file[1:]
+    return [fields[column] for fields in fcsv]
+
+
+def basenames(filenames):
+    """Get base names from full path."""
+    return map(lambda x: os.path.basename(x), filenames)
