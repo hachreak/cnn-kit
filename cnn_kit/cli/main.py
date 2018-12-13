@@ -26,10 +26,13 @@ def csv():
 @click.argument('csv_file', callback=validate_csv_file, type=click.File('rb'))
 @click.argument('src_dir', callback=validate_directory)
 @click.argument('dst_dir')
-def build(csv_file, src_dir, dst_dir):
+@click.option('-s', '--symlinks', is_flag=True, default=False)
+def build(csv_file, src_dir, dst_dir, symlinks):
     csv_file = list(csv_file)
     files = c.find_files(c.get_column(0, csv_file), src_dir)
-    c.create_symlinks(c.build_dataset(csv_file, files, dst_dir))
+    c.copy_files(
+        c.build_dataset(csv_file, files, dst_dir), is_symlinks=symlinks
+    )
 
 
 @csv.command()

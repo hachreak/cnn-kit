@@ -4,6 +4,8 @@
 import errno
 import os
 
+from shutil import copyfile
+
 from .. import preprocess as pr
 
 
@@ -34,12 +36,18 @@ def _get_files_ext(filenames):
     return set([os.path.splitext(filename)[1] for filename in filenames])
 
 
-def create_symlinks(srcs_dsts):
+def copy_files(srcs_dsts, is_symlinks=True):
     """create file symlinks."""
+    create = _create_symlink if is_symlinks else _copy_file
     for src, dst in srcs_dsts:
         directory, _ = os.path.split(dst)
         _create_dir(directory)
-        _create_symlink(src, dst, True)
+        create(src, dst, True)
+
+
+def _copy_file(src, dst, force=True):
+    """Copy file from src to dst."""
+    copyfile(src, dst)
 
 
 def _create_symlink(src, dst, force=True):
