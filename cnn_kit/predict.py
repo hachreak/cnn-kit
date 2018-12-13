@@ -43,7 +43,10 @@ def predict_on_the_fly(model, config, choose=None):
     classes = config['test']['classes']
     gen = ImageDataGenerator(**config['test']['data_gen'])
     flow = gen.flow_from_directory(**_flow_cfg(config, 'test'))
-    pred = model.predict_generator(flow)
+    pred = model.predict_generator(
+        flow,
+        steps=flow.n // flow.batch_size,
+    )
     for i, p in enumerate(pred):
         try:
             yield (flow.filenames[i], classes[flow.classes[i]],
