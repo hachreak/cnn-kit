@@ -45,5 +45,6 @@ def run(config):
         flow_train,
         validation_data=flow_valid,
         callbacks=cbs,
+        validation_steps=flow_valid.n // flow_valid.batch_size,
         **config['train']['fit']
     )
