@@ -4,7 +4,7 @@
 import sys
 
 from keras.losses import categorical_crossentropy
-from keras.optimizers import SGD
+from keras.optimizers import Adam
 from keras.models import load_model
 
 from cnn_kit import train, predict, visualize
@@ -22,7 +22,7 @@ cfg = {
     },
     'compile': {
         'loss': categorical_crossentropy,
-        'optimizer': SGD(lr=0.001, decay=1e-6, momentum=0.5, nesterov=True),
+        'optimizer': Adam(0.0001),
         'metrics': ['accuracy'],
     },
     'train': {
@@ -33,14 +33,14 @@ cfg = {
             'shuffle': True,
         },
         'callbacks': {
-            'keras.callbacks.EarlyStopping': {
-                'monitor': 'val_loss',
-                'min_delta': 0,
-                'patience': 10,
-                'verbose': 1,
-                'mode': 'auto',
-                'restore_best_weights': True,
-            },
+            #  'keras.callbacks.EarlyStopping': {
+            #      'monitor': 'val_loss',
+            #      'min_delta': 0,
+            #      'patience': 10,
+            #      'verbose': 1,
+            #      'mode': 'auto',
+            #      'restore_best_weights': True,
+            #  },
             'keras.callbacks.ModelCheckpoint': {
                 'filepath': 'model-{epoch:02d}-{val_acc:.2f}.hdf5',
                 'monitor': 'val_acc',
@@ -53,13 +53,14 @@ cfg = {
         'data_gen': {
             'shear_range': 0,
             'zoom_range': (0.8, 1),
-            'rotation_range': 1200,
+            'rotation_range': 100,
             'width_shift_range': 0.05,
             'height_shift_range': 0.05,
             'channel_shift_range': 70,
             'fill_mode': 'nearest',
             'horizontal_flip': True,
             'vertical_flip': True,
+            'rescale': 1./255,
         },
         'fit': {
             'epochs': 60,
@@ -70,17 +71,23 @@ cfg = {
     'validate': {
         'flow': {
             'batch_size': 8,
-            'directory': '/tmp/dataset/validate',
+            'directory': '/tmp/dataset/test',
             'class_mode': 'categorical',
         },
-        'data_gen': {},
+        'data_gen': {
+            'rescale': 1./255,
+        },
     },
     'test': {
-        'classes': ['medium', 'no'],
+        'data_gen': {
+            'rescale': 1./255,
+        },
+        'classes': ['medium', 'no', 'regular'],
         'flow': {
             'batch_size': 1,
-            'directory': '/tmp/dataset/validate',
+            'directory': '/tmp/dataset/test',
         },
+        'normalize_cm': True,
     },
 }
 
@@ -134,11 +141,14 @@ def do_confusion_matrix(cfg):
 
     name = sys.argv[2]
 
+    get_matrix = (lambda x: x) if not cfg['test']['normalize_cm'] \
+        else visualize.normalize_cm
     model = load_model(name)
     print("Confusion matrix:\n")
-    visualize.print_matrix(*visualize.confusion_matrix(
+    cm, labels = visualize.confusion_matrix(
         predict.predict_on_the_fly(model, cfg), cfg
-    ))
+    )
+    visualize.print_matrix(get_matrix(cm), labels)
 
 
 def do_wrong(cfg):

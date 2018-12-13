@@ -84,6 +84,10 @@ def print_matrix(matrix, labels):
         print("{0:<15} {1}".format(labels[i], to_print))
 
 
+def normalize_cm(matrix):
+    """Normalize confusion matrix."""
+    return matrix.astype('float') / matrix.sum(axis=1)[:, np.newaxis]
+
 def print_wrong(predictions):
     """Print only wrongly classified."""
     for name, true, pred in predictions:
