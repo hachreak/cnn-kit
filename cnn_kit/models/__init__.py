@@ -2,7 +2,8 @@
 """Models."""
 
 from keras.models import Model
-from keras.layers import Dense, Dropout, GlobalAveragePooling2D
+from keras.layers import Dense, Dropout, GlobalMaxPooling2D
+from keras import regularizers
 
 
 def _set_readonly(model, until=None):
@@ -15,7 +16,7 @@ def _set_readonly(model, until=None):
 def _classification(model, output_shape):
     """Add classification layers."""
     x = model.output
-    x = GlobalAveragePooling2D()(x)
+    x = GlobalMaxPooling2D()(x)
     x = Dense(1024, activation='relu')(x)
     x = Dropout(0.4)(x)
     x = Dense(512, activation='relu')(x)
