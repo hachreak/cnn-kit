@@ -19,13 +19,32 @@ def stream(fun, stream):
         yield fun(value)
 
 
-def get_files(directory, types=None):
+def remove_basepath(filenames, basepath):
+    """Remove basepath from filename list."""
+    length = len(basepath)
+    if not basepath.endswith('/'):
+        length += 1
+    return [f[length:] for f in filenames]
+
+
+def split_files_per_class(filenames):
+    classes = {}
+    for f in filenames:
+        key, value = f.split('/', 1)
+        try:
+            classes[key].append(value)
+        except KeyError:
+            classes[key] = []
+    return classes
+
+
+def get_files(directory, types=None, get_all=False):
     """Get list of images reading recursively."""
     types = types or ['.jpg']
     for root, dirnames, files in os.walk(directory):
         for name in files:
             _, ext = os.path.splitext(name)
-            if ext.lower() in types:
+            if get_all or ext.lower() in types:
                 yield os.path.join(root, name)
 
 
@@ -62,3 +81,13 @@ def normalize(max_):
         matrix /= max_
         return matrix
     return f
+
+
+def get_class_weigth(train_dir, file_types):
+    files = split_files_per_class(remove_basepath(
+        get_files(train_dir, types=file_types),
+        train_dir
+    ))
+    sizes = np.array([float(len(files[key])) for key in sorted(files.keys())])
+    biggest = max(sizes)
+    return sizes / biggest
