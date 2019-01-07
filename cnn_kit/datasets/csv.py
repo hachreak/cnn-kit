@@ -9,6 +9,20 @@ from shutil import copyfile
 from .. import preprocess as pr
 
 
+def create_csv(csvfile, directory):
+    """Create a csv file from a dataset."""
+    filenames = pr.split_files_per_class(
+        pr.remove_basepath(pr.get_files(directory), directory)
+    )
+    # write headers
+    csvfile.writerow(['name', 'set', 'class'])
+    # write files
+    for s, flist in filenames.items():
+        for c, filenames in pr.split_files_per_class(flist).items():
+            for f in filenames:
+                csvfile.writerow([f, s, c])
+
+
 def build_dataset(csv_file, filepaths, dst_dir):
     """Build dataset from csv, using images found."""
     for name, set_, class_ in csv_file[1:]:
