@@ -9,10 +9,10 @@ from shutil import copyfile
 from .. import preprocess as pr
 
 
-def create_csv(csvfile, directory):
+def create_csv(csvfile, directory, types):
     """Create a csv file from a dataset."""
     filenames = pr.split_files_per_class(
-        pr.remove_basepath(pr.get_files(directory), directory)
+        pr.remove_basepath(pr.get_files(directory, types=types), directory)
     )
     # write headers
     csvfile.writerow(['name', 'set', 'class'])

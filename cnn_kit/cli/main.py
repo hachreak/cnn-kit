@@ -51,8 +51,10 @@ def check(csv_file, src_dir):
 @csv.command()
 @click.argument('csv_file', type=click.File('wb'))
 @click.argument('src_dir', callback=validate_directory)
-def save(csv_file, src_dir):
+@click.option('--types', '-t', multiple=True)
+def save(csv_file, src_dir, types):
+    types = types or None
     writer = _csv.writer(
-        csv_file, delimiter=',', quotechar='"' #, quoting=csv.QUOTE_MINIMAL
+        csv_file, delimiter=',', quotechar='"' # quoting=csv.QUOTE_MINIMAL
     )
-    c.create_csv(writer, src_dir)
+    c.create_csv(writer, src_dir, types)
