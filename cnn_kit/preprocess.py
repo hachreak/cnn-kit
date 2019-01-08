@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 import os
 
+from PIL import Image, ImageChops
+
 
 def batch(block, size):
     """Split in batches the input."""
@@ -91,3 +93,15 @@ def get_class_weigth(train_dir, file_types):
     sizes = np.array([float(len(files[key])) for key in sorted(files.keys())])
     biggest = max(sizes)
     return sizes / biggest
+
+
+def crop_white(filename):
+    """Crop white from the image."""
+    img = Image.open(filename)
+    bg = Image.new(img.mode, img.size, img.getpixel((0,0)))
+    diff = ImageChops.difference(img, bg)
+    diff = ImageChops.add(diff, diff, 2.0, -100)
+    bbox = diff.getbbox()
+    if bbox:
+        return img.crop(bbox)
+    return img
