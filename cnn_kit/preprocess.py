@@ -92,7 +92,7 @@ def get_class_weigth(train_dir, file_types):
     ))
     sizes = np.array([float(len(files[key])) for key in sorted(files.keys())])
     biggest = max(sizes)
-    return sizes / biggest
+    return biggest / sizes
 
 
 def crop_white(filename):
