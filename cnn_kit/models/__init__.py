@@ -18,9 +18,9 @@ def _classification(model, output_shape):
     x = model.output
     x = GlobalAveragePooling2D()(x)
     x = Dense(1024, activation='relu')(x)
-    x = Dropout(0.4)(x)
+    x = Dropout(0.3)(x)
     x = Dense(512, activation='relu')(x)
-    x = Dropout(0.4)(x)
+    x = Dropout(0.3)(x)
     x = Dense(output_shape, activation='softmax')(x)
 
     return Model(inputs=model.input, outputs=x)
