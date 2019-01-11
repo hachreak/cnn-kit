@@ -5,7 +5,7 @@ import click
 import csv as _csv
 
 from .validators import validate_csv_file, validate_directory
-from ..datasets import csv as c
+from ..datasets import csv as c, get_duplicates
 
 
 @click.group()
@@ -54,7 +54,19 @@ def check(csv_file, src_dir):
 @click.option('--types', '-t', multiple=True)
 def save(csv_file, src_dir, types):
     types = types or None
-    writer = _csv.writer(
-        csv_file, delimiter=',', quotechar='"' # quoting=csv.QUOTE_MINIMAL
-    )
+    writer = _csv.writer(csv_file, delimiter=',', quotechar='"')
     c.create_csv(writer, src_dir, types)
+
+
+@dataset.group()
+def files():
+    pass
+
+
+@files.command()
+@click.argument('src_dir', callback=validate_directory)
+@click.option('--types', '-t', multiple=True)
+def dups(src_dir, types):
+    types = types or None
+    for f in get_duplicates(src_dir, types):
+        print(f)
