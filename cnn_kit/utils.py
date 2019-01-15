@@ -29,5 +29,5 @@ def get_output_shape(directory):
 def get_phase_cfg(config, name):
     img_width, img_height, _ = deepcopy(config['main']['img_shape'])
     cfg = deepcopy(config.get(name, {}).get('flow', {}))
-    cfg['target_size'] = (img_height, img_width)
+    cfg['target_size'] = img_width, img_height
     return cfg
