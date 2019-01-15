@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 import os
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageOps
 
 
 def batch(block, size):
@@ -95,13 +95,39 @@ def get_class_weigth(train_dir, file_types):
     return biggest / sizes
 
 
-def crop_white(filename):
-    """Crop white from the image."""
-    img = Image.open(filename)
-    bg = Image.new(img.mode, img.size, img.getpixel((0,0)))
+def resize(size):
+    """Resize properly."""
+    def f(img_input):
+        """Crop white from the image."""
+        return fill(crop_extra(img_input), size)
+    return f
+
+
+def crop_extra(img):
+    """Remove extra white."""
+    bg = Image.new(img.mode, img.size, img.getpixel((0, 0)))
     diff = ImageChops.difference(img, bg)
     diff = ImageChops.add(diff, diff, 2.0, -100)
     bbox = diff.getbbox()
     if bbox:
-        return img.crop(bbox)
+        img = img.crop(bbox)
     return img
+
+
+def fill(img, size):
+    # adapt image
+    if img.size[0] > size[0] or img.size[1] > size[1]:
+        img.thumbnail(size, Image.ANTIALIAS)
+    else:
+        img = ImageOps.fit(img, size, Image.ANTIALIAS)
+    # compute margin
+    margin_x = size[0] - img.size[0]
+    margin_y = size[1] - img.size[1]
+    black_left = margin_x // 2
+    black_right = margin_x - black_left
+    black_top = margin_y // 2
+    black_bottom = margin_y - black_top
+    # fill the empty
+    return ImageOps.expand(
+        img, border=(black_left, black_top, black_right, black_bottom)
+    )

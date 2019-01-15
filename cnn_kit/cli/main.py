@@ -1,9 +1,13 @@
 
 """CLI."""
 
+import os
 import click
 import csv as _csv
 
+from PIL import Image
+
+from .. import preprocess as pr
 from .validators import validate_csv_file, validate_directory
 from ..datasets import csv as c, get_duplicates
 
@@ -16,6 +20,32 @@ def cli():
 @cli.group()
 def dataset():
     pass
+
+
+@dataset.command()
+@click.argument('src_dir', callback=validate_directory)
+@click.argument('dst_dir', callback=validate_directory)
+@click.argument('width', type=int)
+@click.argument('height', type=int)
+@click.option('--types', '-t', multiple=True)
+def resize(src_dir, dst_dir, width, height, types):
+    resize = pr.resize((width, height))
+    for f in pr.get_files(src_dir, types=types):
+        # get file name
+        name = f[len(src_dir) + 1:]
+        # resize image
+        img = resize(Image.open(f))
+        # build destination file name
+        dst_name = os.path.join(dst_dir, name)
+        try:
+            # save
+            img.save(dst_name)
+        except IOError:
+            # make dirs if doesn't exist yet
+            dirname = os.path.dirname(name)
+            os.makedirs(os.path.join(dst_dir, dirname))
+            # try again
+            img.save(dst_name)
 
 
 @dataset.group()
