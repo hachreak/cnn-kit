@@ -29,10 +29,11 @@ def dataset():
 @click.argument('height', type=int)
 @click.option('--types', '-t', multiple=True)
 def resize(src_dir, dst_dir, width, height, types):
+    path_len = len(os.path.normpath(src_dir)) + 1
     resize = pr.resize((width, height))
     for f in pr.get_files(src_dir, types=types):
         # get file name
-        name = f[len(src_dir) + 1:]
+        name = f[path_len:]
         # resize image
         img = resize(Image.open(f))
         # build destination file name
