@@ -42,7 +42,7 @@ def split_files_per_class(filenames):
 
 def get_files(directory, types=None, get_all=False):
     """Get list of images reading recursively."""
-    types = types or ['.jpg']
+    types = types or ['.jpg', '.tif']
     for root, dirnames, files in os.walk(directory):
         for name in files:
             _, ext = os.path.splitext(name)
