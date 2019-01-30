@@ -101,3 +101,29 @@ def dups(src_dir, types):
     types = types or None
     for f in get_duplicates(src_dir, types):
         print(f)
+
+
+@csv.group()
+def results():
+    """Manipulate csv results."""
+    pass
+
+
+@results.command()
+@click.argument('csv_file', callback=validate_csv_file, type=click.File('rb'))
+@click.argument('src_dir', callback=validate_directory)
+@click.option('--types', '-t', multiple=True)
+@click.option('--column-to-filter', '-c', type=int, default=0,
+              show_default=True, help="Column to use to filter")
+@click.option('--column-to-get', '-g', type=int, default=0,
+              show_default=True, help="Column where is the file name")
+@click.option('--value', '-v', help="Value to filter")
+def extract(csv_file, src_dir, types, column_to_filter, column_to_get, value):
+    """Extract images from csv where a filter column match value."""
+    csv_file = list(csv_file)[1:]
+    images = list(pr.get_files(src_dir, types))
+    toget = [l[column_to_get] for l in csv_file
+             if l[column_to_filter] == value]
+    file_list = map(lambda x: [y for y in images if x in y][0], toget)
+    for i in file_list:
+        print(i)
