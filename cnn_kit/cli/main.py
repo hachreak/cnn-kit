@@ -118,12 +118,34 @@ def results():
 @click.option('--column-to-get', '-g', type=int, default=0,
               show_default=True, help="Column where is the file name")
 @click.option('--value', '-v', help="Value to filter")
-def extract(csv_file, src_dir, types, column_to_filter, column_to_get, value):
+@click.option('--dst_dir', '-d')
+@click.option('--symlinks', '-s', is_flag=True, default=False)
+def extract(csv_file, src_dir, types, column_to_filter, column_to_get, value,
+            dst_dir, symlinks):
     """Extract images from csv where a filter column match value."""
+    def src_dst(images, toget, dst_dir=None):
+        """Find image and, if set, return image path and destination path."""
+        def f(x):
+            image = [y for y in images if x in y][0]
+            if dst_dir:
+                return image, os.path.join(dst_dir, os.path.basename(image))
+            else:
+                return image
+        return f
+
+    # read csv
     csv_file = list(csv_file)[1:]
+    # read src file list
     images = list(pr.get_files(src_dir, types))
+    # get column with file name key filtered by another colum
     toget = [l[column_to_get] for l in csv_file
              if l[column_to_filter] == value]
-    file_list = map(lambda x: [y for y in images if x in y][0], toget)
-    for i in file_list:
-        print(i)
+    # build pairs src/dst or only src if no destination is set
+    file_list = map(src_dst(images, toget, dst_dir), toget)
+    # print file names if no destination is specified
+    if not dst_dir:
+        for file_name in file_list:
+            print(file_name)
+    # copy files if destination directory is set
+    if dst_dir:
+        c.copy_files(file_list, symlinks)

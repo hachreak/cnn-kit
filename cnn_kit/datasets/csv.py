@@ -84,6 +84,7 @@ def _create_dir(path):
         else:
             raise
 
+
 def get_column(column, csv_file):
     fcsv = csv_file[1:]
     return [fields[column] for fields in fcsv]
