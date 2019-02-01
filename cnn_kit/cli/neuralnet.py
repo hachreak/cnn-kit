@@ -7,6 +7,12 @@ from .validators import validate_json, validate_model
 from .. import preprocess as pr, utils, train as tr, predict as pred, visualize
 
 
+def _set_rescale(cfg, profile):
+    """Set rescale."""
+    rescale_factor = cfg['main'].get('rescale_factor', 1)
+    cfg[profile]['data_gen']['rescale'] = 1. / rescale_factor
+
+
 @click.group()
 def nn():
     pass
@@ -25,8 +31,7 @@ def train(cfg):
             **cfg['compile']['optimizer']['kwargs']
     )
 
-    rescale_factor = cfg['main'].get('rescale_factor', 1)
-    cfg['train']['data_gen']['rescale'] = 1. / rescale_factor
+    _set_rescale(cfg, 'train')
 
     tr.run(cfg)
 
@@ -37,8 +42,7 @@ def train(cfg):
 @click.option('--threshold', '-t', type=float, default=0.5)
 def predict(cfg, model, threshold):
     """Predict."""
-    rescale_factor = cfg['main'].get('rescale_factor', 1)
-    cfg['test']['data_gen']['rescale'] = 1. / rescale_factor
+    _set_rescale(cfg, 'test')
 
     for filename, y_true, y_pred in pred.predict_on_the_fly(
             model, cfg, choose=pred.over_threshold(threshold)):
@@ -51,8 +55,7 @@ def predict(cfg, model, threshold):
 @click.option('--threshold', '-t', type=float, default=0.5)
 def cm(cfg, model, threshold):
     """Confusion matrix."""
-    rescale_factor = cfg['main'].get('rescale_factor', 1)
-    cfg['test']['data_gen']['rescale'] = 1. / rescale_factor
+    _set_rescale(cfg, 'test')
 
     get_matrix = (lambda x: x) if not cfg['test']['normalize_cm'] \
         else visualize.normalize_cm
@@ -62,3 +65,16 @@ def cm(cfg, model, threshold):
         pred.predict_on_the_fly(model, cfg), cfg
     )
     visualize.print_matrix(get_matrix(cm), labels)
+
+
+@nn.command()
+@click.argument('cfg', callback=validate_json)
+@click.argument('model', callback=validate_model)
+@click.option('--threshold', '-t', type=float, default=0.5)
+def wrong(cfg, model, threshold):
+    """Confusion matrix."""
+    _set_rescale(cfg, 'test')
+
+    visualize.print_wrong(pred.predict_on_the_fly(
+        model, cfg, choose=pred.over_threshold(threshold)
+    ))
