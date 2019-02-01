@@ -6,12 +6,13 @@ See original model: https://github.com/akshaysharma096/Siamese-Networks
 
 from keras.layers import Input, Lambda, Dense
 from keras.models import Model
-from keras import backend as K
+
+from ..layers import _lambda
 
 
 def get_model(input_shape, model, output_shape, fun=None):
     """Get the model."""
-    fun = fun or abs_diff
+    fun = fun or _lambda.abs_diff
 
     left_input = Input(input_shape)
     right_input = Input(input_shape)
@@ -25,15 +26,3 @@ def get_model(input_shape, model, output_shape, fun=None):
     prediction = Dense(output_shape, activation='sigmoid')(L1_distance)
 
     return Model(inputs=[left_input, right_input], outputs=prediction)
-
-
-def abs_diff(tensors):
-    """Make abs(A - B)."""
-    return K.abs(tensors[0] - tensors[1])
-
-
-def euclidean_distance(tensors):
-    """Make euclidean distance."""
-    return K.sqrt(
-        (K.square(tensors[0] - tensors[1])).sum(axis=1, keepdims=True)
-    )
