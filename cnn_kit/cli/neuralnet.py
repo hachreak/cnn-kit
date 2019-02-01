@@ -78,3 +78,16 @@ def wrong(cfg, model, threshold):
     visualize.print_wrong(pred.predict_on_the_fly(
         model, cfg, choose=pred.over_threshold(threshold)
     ))
+
+
+@nn.command()
+@click.argument('cfg', callback=validate_json)
+@click.argument('model', callback=validate_model)
+@click.option('--threshold', '-t', type=float, default=0.5)
+def report(cfg, model, threshold):
+    """Confusion matrix."""
+    _set_rescale(cfg, 'test')
+
+    print(visualize.classification_report(
+        pred.predict_on_the_fly(model, cfg), cfg
+    ))
