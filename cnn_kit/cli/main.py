@@ -1,10 +1,10 @@
 
 """CLI."""
 
-import os
 import click
 
 from .dataset import dataset
+from .neuralnet import nn
 
 
 @click.group()
@@ -13,3 +13,4 @@ def cli():
 
 
 cli.add_command(dataset)
+cli.add_command(nn)
