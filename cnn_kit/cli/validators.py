@@ -27,7 +27,7 @@ def validate_model(ctx, param, value):
     from keras.models import load_model
     if not os.path.isfile(value):
         raise click.BadParameter("Model {0} doesn't exist".format(value))
-    return load_model(value)
+    return load_model(str(value))
 
 
 def validate_json(ctx, param, value):
