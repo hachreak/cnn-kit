@@ -1,0 +1,72 @@
+{
+  "main": {
+    "img_shape": [500, 500, 3],
+    "model": {
+      "name": "cnn_kit.models.fine_tuning_vgg19.get_model",
+      "args": {
+        "readonly_until": 15
+      }
+    },
+    "rescale_factor": 255
+  },
+  "compile": {
+    "loss": "keras.losses.categorical_crossentropy",
+    "optimizer": {
+      "name": "keras.optimizers.Adam",
+      "kwargs": {
+        "lr": 0.0001
+      }
+    },
+    "metrics": ["accuracy"]
+  },
+  "train": {
+    "flow": {
+      "batch_size": 8,
+      "directory": "/tmp/dataset1/train",
+      "class_mode": "categorical",
+      "shuffle": true
+    },
+    "callbacks": {
+      "keras.callbacks.ModelCheckpoint": {
+        "filepath": "model-{epoch:02d}-{val_acc:.2f}.hdf5",
+        "monitor": "val_acc",
+        "save_best_only": true,
+        "save_weights_only": false,
+        "mode": "max",
+        "verbose": 1
+      }
+    },
+    "data_gen": {
+      "shear_range": 0,
+      "channel_shift_range": 0.1,
+      "fill_mode": "nearest",
+      "horizontal_flip": true,
+      "vertical_flip": true
+    },
+    "fit": {
+      "epochs": 60,
+      "steps_per_epoch": 400,
+      "verbose": 1,
+      "class_weight": []
+    }
+  },
+  "validate": {
+    "flow": {
+      "batch_size": 8,
+      "directory": "/tmp/dataset1/test",
+      "class_mode": "categorical"
+    },
+    "data_gen": {
+    }
+  },
+  "test": {
+    "data_gen": {
+    },
+    "classes": ["class1", "class2"],
+    "flow": {
+      "batch_size": 1,
+      "directory": "/tmp/dataset1/test"
+    },
+    "normalize_cm": true
+  }
+}
